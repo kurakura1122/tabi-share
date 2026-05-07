@@ -234,7 +234,7 @@ ${JSON.stringify(baseResult)}
 ${originalItineraryText || '（スポット情報なし）'}
 
 【ユーザー条件】
-- 予算（合計）: ${budgetNum ? `${budgetNum.toLocaleString()}円` : '指定なし'}${budgetNum ? `（この予算には${budgetIncludeItems.length > 0 ? budgetIncludeItems.join('・') : 'すべての費用'}が含まれています${budgetExcludeItems.length > 0 ? `。${budgetExcludeItems.join('・')}は含みません` : ''}）` : ''}
+- 予算（合計）: ${budgetNum ? `${budgetNum.toLocaleString()}円` : '指定なし'}${budgetNum ? `（この予算には${budgetIncludeItems.length > 0 ? budgetIncludeItems.join('・') : 'すべての費用'}が含まれています${budgetExcludeItems.length > 0 ? ('。' + budgetExcludeItems.join('・') + 'は含みません') : ''}）` : ''}
 - 日数: ${days}日間
 - 目的: ${purpose}
 - ペース: ${pace}
@@ -247,7 +247,9 @@ ${originalItineraryText || '（スポット情報なし）'}
 - 出発地: ${departureLocation || '指定なし'}
 - 出発時刻: ${departureTime || '指定なし'}
 - 移動手段: ${transportation || '指定なし'}
-${transitRoundTrip > 0 ? `\n【交通費情報（往復）】\n出発地「${departureLocation}」から「${trip.prefecture}」への往復交通費: 約${transitRoundTrip.toLocaleString()}円\nこの金額をbudget_summaryのtransportに使用すること。` : ''}
+${transitRoundTrip > 0 ? `\n【交通費情報（往復）】\n出発地「${departureLocation}#�7�/�
+'�0���ɥ���ɕ�����ɕ��7���������ꓦk���胞����Ʌ�ͥ�I�չ�Qɥ��ѽ1�����M�ɥ������q��O���G��7�
+I�Ց���}�յ������Ʌ�����ӎ使用すること。` : ''}
 
 【アレンジルール（必ず守ること）】
 ■ 変えてはいけないもの:
@@ -268,10 +270,10 @@ ${departureLocation ? `- 1日目の出発地は「${departureLocation}」で固�
 2. 各スポットに1文で魅力説明を入れる（descriptionフィールド）
 3. 同じエリア内で移動が効率的になるよう順序を組む
 4. ペット同伴可の場合、ペット可の施設のみ選ぶ
-${transportation ? b5. 移動手段は「${transportation}」のみ使用すること。${transportation === '車なし' || transportation === '電車・バス' ? '車・レンタカーを使う移動は含めないこと。公共交通機関・徒歩・自転車でアクセスできるスポットのみ選ぶこと。' : transportation === '車あり' || transportation === 'レンタカー' ? '車でのアクセスを前提としたプランにすること。' : ''}` : ''}
+${transportation ? `5. 移動手段は「${transportation}」のみ使用すること。${transportation === '車なし' || transportation === '電車・バス' ? '車・レンタカーを使う移動は含めないこと。公共交通機関・徒歩・自転車でアクセスできるスポットのみ選ぶこと。' : transportation === '車あり' || transportation === 'レンタカー' ? '車でのアクセスを前提としたプランにすること。' : ''}` : ''}
 ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算の80〜100%（${budgetMin.toLocaleString()}〜${budgetNum.toLocaleString()}円）に収めること` : ''}
 
-【出力形式】以下げJSON構造で必ず出力すること:
+【出力形式】以下のJSON構造で必ず出力すること:
 {
   "title": "旅程タイトル",
   "days": [
@@ -283,7 +285,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
           "time": "9:00",
           "description": "1文の魅力説明",
           "price": 1500
- &      }
+        }
       ]
     }
   ],
@@ -300,7 +302,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
 
 【予算計算ルール】
 - transport: ${transitRoundTrip > 0 ? `「${transitRoundTrip.toLocaleString()}円」を必ず使用すること（往復交通費として計算済み）` : '出発地〜旅行エリアの往復交通費を調べて計算すること'}
-- activities: 各stopc��priceフィールドの合計を使用すること（入場料・体験料・有料スポットのみ。無料スポットは0）
+- activities: 各stopのpriceフィールドの合計を使用すること（入場料・体験料・有料スポットのみ。無料スポットは0）
 - lodging: 宿代の見積もり（1泊あたりの相場 × 泊数）
 - meals: 食事代の見積もり（1日あたり3食 × 日数 × 人数）
 - total: 上記の合計`;
@@ -309,7 +311,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
       const response = await invokeFunction('generateText', { prompt });
       const rawResult = response.data.result;
 
-    0 // JSONパース
+      // JSONパース
       let parsed;
       try {
         parsed = typeof rawResult === 'string' ? JSON.parse(rawResult) : rawResult;
@@ -356,15 +358,15 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
 
               const stopData = {
                 trip_id: tripId,
-            0   name: stop.name,
+                name: stop.name,
                 place_id: place.place_id || '',
                 lat: place.lat,
                 lng: place.lng,
                 order_index: orderIndex,
-      0        day: day.day_index,
-                memo: stop.desc4ription || '',
+                day: day.day_index,
+                memo: stop.description || '',
                 variant: 'generated',
-      0       };
+              };
               await entities.TripStop.create(stopData);
               resolvedStops.push(stopData);
               orderIndex++;
@@ -459,7 +461,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               placeholder="例: 60000 または 6万円"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-            />
+  2         />
             {budget && (
               <div className="space-y-2 pt-1">
                 <p className="text-xs text-gray-500">予算に含む項目：</p>
@@ -485,7 +487,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               id="days"
               type="number"
               min="1"
-              max="30"
+ 2            max="30"
               placeholder={`元: ${trip.days}日間`}
               value={daysChange}
               onChange={(e) => setDaysChange(e.target.value)}
@@ -494,7 +496,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
 
           <div className="space-y-2">
             <Label htmlFor="purpose">目的</Label>
-            <Select value={purpose} onValueChange={setPurpose}>
+      2     <Select value={purpose} onValueChange={setPurpose}>
               <SelectTrigger id="purpose">
                 <SelectValue placeholder="選択してください" />
               </SelectTrigger>
@@ -502,13 +504,13 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                 <SelectItem value="グルメ">グルメ</SelectItem>
                 <SelectItem value="観光">観光</SelectItem>
                 <SelectItem value="映え">映え</SelectItem>
-                <SelectItem value="ショッピング">ショッピング</SelectItem>
+                <SelectItem value="シメッピング">ショッピング</SelectItem>
                 <SelectItem value="アドベンチャー">アドベンチャー</SelectItem>
                 <SelectItem value="文化体験">文化体験</SelectItem>
                 <SelectItem value="リラックス">リラックス</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+        2 </div>
 
           <div className="space-y-2">
             <Label htmlFor="pace">ペース</Label>
@@ -533,13 +535,13 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="一人旅">一人旅</SelectItem>
-                <SelectItem value="友達">友達</SelectItem>
+         2      <SelectItem value="友達">友達</SelectItem>
                 <SelectItem value="恋人">恋人</SelectItem>
                 <SelectItem value="家族">家族</SelectItem>
                 <SelectItem value="出張">出張</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+    2     </div>
 
           <div className="space-y-2">
             <Label htmlFor="departureDate">出発希望日</Label>
@@ -548,7 +550,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               type="date"
               value={departureDate}
               onChange={(e) => setDepartureDate(e.target.value)}
-            />
+ �2         />
           </div>
 
           <Sheet>
@@ -563,7 +565,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                 <SheetTitle>詳細検索</SheetTitle>
               </SheetHeader>
               <div className="space-y-5 py-6">
-                <div className="space-y-2">
+ 2              <div className="space-y-2">
                   <Label htmlFor="adultsCount">大人の人数</Label>
                   <Input
                     id="adultsCount"
@@ -608,7 +610,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                   <Label htmlFor="pets">ペット同伴</Label>
                   <Switch
                     id="pets"
-                    checked={allowsPets}
+         2          checked={allowsPets}
                     onCheckedChange={setAllowsPets}
                   />
                 </div>
