@@ -247,9 +247,7 @@ ${originalItineraryText || '（スポット情報なし）'}
 - 出発地: ${departureLocation || '指定なし'}
 - 出発時刻: ${departureTime || '指定なし'}
 - 移動手段: ${transportation || '指定なし'}
-${transitRoundTrip > 0 ? `\n【交通費情報（往復）】\n出発地「${departureLocation}#�7�/�
-'�0���ɥ���ɕ�����ɕ��7���������ꓦk���胞����Ʌ�ͥ�I�չ�Qɥ��ѽ1�����M�ɥ������q��O���G��7�
-I�Ց���}�յ������Ʌ�����ӎ使用すること。` : ''}
+${transitRoundTrip > 0 ? `\n【交通費情報（往復）】\n出発地「${departureLocation}」から「${trip.prefecture}」への往復交通費: 約${transitRoundTrip.toLocaleString()}円\nこの金額をbudget_summaryのtransportに使用すること。` : ''}
 
 【アレンジルール（必ず守ること）】
 ■ 変えてはいけないもの:
@@ -461,7 +459,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               placeholder="例: 60000 または 6万円"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-  2         />
+            />
             {budget && (
               <div className="space-y-2 pt-1">
                 <p className="text-xs text-gray-500">予算に含む項目：</p>
@@ -487,7 +485,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               id="days"
               type="number"
               min="1"
- 2            max="30"
+              max="30"
               placeholder={`元: ${trip.days}日間`}
               value={daysChange}
               onChange={(e) => setDaysChange(e.target.value)}
@@ -496,7 +494,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
 
           <div className="space-y-2">
             <Label htmlFor="purpose">目的</Label>
-      2     <Select value={purpose} onValueChange={setPurpose}>
+            <Select value={purpose} onValueChange={setPurpose}>
               <SelectTrigger id="purpose">
                 <SelectValue placeholder="選択してください" />
               </SelectTrigger>
@@ -504,13 +502,13 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                 <SelectItem value="グルメ">グルメ</SelectItem>
                 <SelectItem value="観光">観光</SelectItem>
                 <SelectItem value="映え">映え</SelectItem>
-                <SelectItem value="シメッピング">ショッピング</SelectItem>
+                <SelectItem value="ショッピング">ショッピング</SelectItem>
                 <SelectItem value="アドベンチャー">アドベンチャー</SelectItem>
                 <SelectItem value="文化体験">文化体験</SelectItem>
                 <SelectItem value="リラックス">リラックス</SelectItem>
               </SelectContent>
             </Select>
-        2 </div>
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="pace">ペース</Label>
@@ -535,13 +533,13 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="一人旅">一人旅</SelectItem>
-         2      <SelectItem value="友達">友達</SelectItem>
+                <SelectItem value="友達">友達</SelectItem>
                 <SelectItem value="恋人">恋人</SelectItem>
                 <SelectItem value="家族">家族</SelectItem>
                 <SelectItem value="出張">出張</SelectItem>
               </SelectContent>
             </Select>
-    2     </div>
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="departureDate">出発希望日</Label>
@@ -550,7 +548,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
               type="date"
               value={departureDate}
               onChange={(e) => setDepartureDate(e.target.value)}
- �2         />
+            />
           </div>
 
           <Sheet>
@@ -565,7 +563,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                 <SheetTitle>詳細検索</SheetTitle>
               </SheetHeader>
               <div className="space-y-5 py-6">
- 2              <div className="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="adultsCount">大人の人数</Label>
                   <Input
                     id="adultsCount"
@@ -610,7 +608,7 @@ ${budgetNum ? `${transportation ? '6' : '5'}. 見積もり合計は必ず予算�
                   <Label htmlFor="pets">ペット同伴</Label>
                   <Switch
                     id="pets"
-         2          checked={allowsPets}
+                    checked={allowsPets}
                     onCheckedChange={setAllowsPets}
                   />
                 </div>
